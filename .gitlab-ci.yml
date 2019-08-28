@@ -1,0 +1,25 @@
+cache:
+  paths:
+    - .m2/repository
+stages:
+  - build
+  - deploy
+
+# maven编译
+job sonar:
+  stage: build
+  only:
+    - master
+  script:
+    - mvn clean package sonar:sonar
+#    - cp -rp target/project-0.0.1.jar /home/pmo/_static_buildpackage/project-$CI_COMMIT_REF_NAME-$CI_PIPELINE_ID.jar
+
+# docker发布
+job sonar:
+  stage: deploy
+  only:
+    - master
+  script:
+    - docker build -t project-latest .
+    - if [ $(docker ps -aq --filter name=project-latest) ]; then docker rm -f project-latest;fi
+    - docker run -d -p 8181:8181 --name project-latest project-latest

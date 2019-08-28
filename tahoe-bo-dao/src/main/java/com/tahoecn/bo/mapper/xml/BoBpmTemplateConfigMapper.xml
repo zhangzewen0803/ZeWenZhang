@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tahoecn.bo.mapper.BoBpmTemplateConfigMapper">
+
+	<select id="selectOneTemplateIdByType" resultType="com.tahoecn.bo.model.entity.BoBpmTemplateConfig">
+        SELECT
+			id,
+			template_id,
+			bu_type
+		FROM
+			bo_bpm_template_config
+		WHERE
+			bu_type = #{templateType}
+		AND is_delete = 0
+		AND is_disable = 0
+    </select>
+
+</mapper>

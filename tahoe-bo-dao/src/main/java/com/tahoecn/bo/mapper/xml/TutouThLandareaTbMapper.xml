@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tahoecn.bo.mapper.TutouThLandareaTbMapper">
+
+	<select id="selectLandareaListDS" resultType="com.tahoecn.bo.model.entity.TutouThLandareaTb">
+        SELECT
+			id sourceId,
+			land_id landId,
+			total_area totalArea,
+			construction_land constructionLand,
+			aboveground_planning abovegroundPlanning,
+			building_limit buildingLimit,
+			gauge_density gaugeDensity,
+			planning_density planningDensity,
+			gauge_rate gaugeRate,
+			planning_rate planningRate,
+			greening_rate greeningRate,
+			commercia_area commerciaArea,
+			guarantee_room guaranteeRoom,
+			public_rental_area publicRentalArea,
+			limited_room_area limitedRoomArea,
+			property_rights_housing propertyRightsHousing,
+			other_housing otherHousing,
+			other_area otherArea,
+			type
+		FROM
+			th_landarea_tb
+    </select>
+
+	<select id="selectLandareaList" resultType="com.tahoecn.bo.model.entity.TutouThLandareaTb">
+        SELECT
+        	id,
+			source_id sourceId,
+			land_id landId,
+			total_area totalArea,
+			construction_land constructionLand,
+			aboveground_planning abovegroundPlanning,
+			building_limit buildingLimit,
+			gauge_density gaugeDensity,
+			planning_density planningDensity,
+			gauge_rate gaugeRate,
+			planning_rate planningRate,
+			greening_rate greeningRate,
+			commercia_area commerciaArea,
+			guarantee_room guaranteeRoom,
+			public_rental_area publicRentalArea,
+			limited_room_area limitedRoomArea,
+			property_rights_housing propertyRightsHousing,
+			other_housing otherHousing,
+			other_area otherArea,
+			type
+		FROM
+			tutou_th_landarea_tb
+    </select>
+    
+	<select id="selectBySourceId" resultType="com.tahoecn.bo.model.entity.TutouThLandareaTb">
+        SELECT
+        	id,
+			source_id sourceId,
+			land_id landId,
+			total_area totalArea,
+			construction_land constructionLand,
+			aboveground_planning abovegroundPlanning,
+			building_limit buildingLimit,
+			gauge_density gaugeDensity,
+			planning_density planningDensity,
+			gauge_rate gaugeRate,
+			planning_rate planningRate,
+			greening_rate greeningRate,
+			commercia_area commerciaArea,
+			guarantee_room guaranteeRoom,
+			public_rental_area publicRentalArea,
+			limited_room_area limitedRoomArea,
+			property_rights_housing propertyRightsHousing,
+			other_housing otherHousing,
+			other_area otherArea,
+			type
+		FROM
+			tutou_th_landarea_tb
+		Where source_id = #{sourceId}
+    </select>
+
+	<insert id="batchInsertLandareaList">
+		INSERT INTO tutou_th_landarea_tb (
+			id,source_id,land_id,total_area,construction_land,aboveground_planning,
+			building_limit,gauge_density,planning_density,gauge_rate,planning_rate,
+			greening_rate,commercia_area,guarantee_room,public_rental_area,limited_room_area,
+			property_rights_housing,other_housing,other_area,type
+			
+		) VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+    	(
+    		#{item.id},#{item.sourceId},#{item.landId},#{item.totalArea},#{item.constructionLand},
+    		#{item.abovegroundPlanning},#{item.buildingLimit},#{item.gaugeDensity},
+    		#{item.planningDensity},#{item.gaugeRate},#{item.planningRate},#{item.greeningRate},
+    		#{item.commerciaArea},#{item.guaranteeRoom},#{item.publicRentalArea},
+    		#{item.limitedRoomArea},#{item.propertyRightsHousing},#{item.otherHousing},
+    		#{item.otherArea},#{item.type}
+      	)
+    	</foreach>
+	</insert>
+	
+	<update id="batchUpdateLandareaList">
+        <foreach collection="list" separator=";" item="item">
+            update tutou_th_landarea_tb set
+            	id = #{item.id},
+				source_id = #{item.sourceId},
+				land_id = #{item.landId},
+				total_area = #{item.totalArea},
+				construction_land = #{item.constructionLand},
+				aboveground_planning = #{item.abovegroundPlanning},
+				building_limit = #{item.buildingLimit},
+				gauge_density = #{item.gaugeDensity},
+				planning_density = #{item.planningDensity},
+				gauge_rate = #{item.gaugeRate},
+				planning_rate = #{item.planningRate},
+				greening_rate = #{item.greeningRate},
+				commercia_area = #{item.commerciaArea},
+				guarantee_room = #{item.guaranteeRoom},
+				public_rental_area = #{item.publicRentalArea},
+				limited_room_area = #{item.limitedRoomArea},
+				property_rights_housing = #{item.propertyRightsHousing},
+				other_housing = #{item.otherHousing},
+				other_area = #{item.otherArea},
+				type = #{item.type}
+			Where id = #{item.id}
+        </foreach>
+    </update>
+</mapper>

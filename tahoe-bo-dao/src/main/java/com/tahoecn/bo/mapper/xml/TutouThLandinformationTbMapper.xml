@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tahoecn.bo.mapper.TutouThLandinformationTbMapper">
+
+    <select id="selectByLandId" resultType="com.tahoecn.bo.model.dto.LandInfoDto">
+        SELECT DISTINCT tlt.id landId,
+			tlt.project_name landName,
+			tlt.total_construction taotalBuildMeasure,
+			lnt.planning_rate meterBuildMeasure,
+			lnt.construction_use_land canUseMeasure FROM
+		(SELECT * FROM (SELECT tlt.* FROM (SELECT tlt.* FROM (
+		SELECT t.*,tst.source_id,tst.type FROM
+		tutou_th_landinformation_tb t
+		INNER JOIN tutou_th_state_tb
+		tst ON t.state_id = tst.source_id AND type in (5,6) order by tst.source_id desc
+		) AS tlt order by land_id,source_id) AS tlt order by source_id) tlt GROUP BY tlt.land_id ORDER BY source_id) tlt
+		LEFT JOIN tutou_th_landarea_new_tb lnt ON lnt.land_id = tlt.land_id AND lnt.type = tlt.type
+        WHERE tlt.id = #{landId}
+    </select>
+    
+	<select id="selectLandinfoListDS" resultType="com.tahoecn.bo.model.entity.TutouThLandinformationTb">
+        SELECT
+			land_id landId,
+			project_name projectName,
+			purpose_id purposeId,
+			total_construction totalConstruction,
+			volumetric_rate volumetricRate,
+			contract_value contractValue,
+			land_vale landVale,
+			state_id stateId,
+			person_charge personCharge,
+			follow_time followTime,
+			region_code regionCode,
+			city_code cityCode,
+			steate_id steateId,
+			coordinate,
+			region_total_value regionTotalValue,
+			group_total_value groupTotalValue,
+			region_name regionName,
+			city_name cityName,
+			land_nature_id landNatureId,
+			confirm_time confirmTime,
+			user_name userName,
+			is_contract isContract,
+			is_approve isApprove,
+			contract_time contractTime,
+			is_history isHistory
+		FROM
+			th_landinformation_tb
+    </select>
+
+	<select id="selectLandinfoList" resultType="com.tahoecn.bo.model.entity.TutouThLandinformationTb">
+        SELECT
+			land_id landId,
+			project_name projectName,
+			purpose_id purposeId,
+			total_construction totalConstruction,
+			volumetric_rate volumetricRate,
+			contract_value contractValue,
+			land_vale landVale,
+			state_id stateId,
+			person_charge personCharge,
+			follow_time followTime,
+			region_code regionCode,
+			city_code cityCode,
+			steate_id steateId,
+			coordinate,
+			region_total_value regionTotalValue,
+			group_total_value groupTotalValue,
+			region_name regionName,
+			city_name cityName,
+			land_nature_id landNatureId,
+			confirm_time confirmTime,
+			user_name userName,
+			is_contract isContract,
+			is_approve isApprove,
+			contract_time contractTime,
+			is_history isHistory
+		FROM
+			tutou_th_landinformation_tb
+    </select>
+
+	<insert id="batchInsertLandinfoList">
+		INSERT INTO tutou_th_landinformation_tb (
+			id, land_id, project_name, purpose_id, total_construction, volumetric_rate,
+			contract_value, land_vale, state_id, person_charge, follow_time, region_code,
+			city_code, steate_id, coordinate, region_total_value, group_total_value, 
+			region_name, city_name, land_nature_id, confirm_time, user_name, is_contract,
+			is_approve, contract_time, is_history, create_time
+		) VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+    	(
+    		#{item.id},#{item.landId},#{item.projectName},#{item.purposeId},#{item.totalConstruction},
+    		#{item.volumetricRate},#{item.contractValue},#{item.landVale},#{item.stateId},
+    		#{item.personCharge},#{item.followTime},#{item.regionCode},#{item.cityCode},
+    		#{item.steateId},#{item.coordinate},#{item.regionTotalValue},#{item.groupTotalValue},
+    		#{item.regionName},#{item.cityName},#{item.landNatureId},#{item.confirmTime},
+    		#{item.userName},#{item.isContract},#{item.isApprove},#{item.contractTime},
+    		#{item.isHistory},#{item.createTime}
+      	)
+    	</foreach>
+	</insert>
+
+	<select id="selectInfoByLandId" resultType="com.tahoecn.bo.model.entity.TutouThLandinformationTb">
+        SELECT
+        	id,
+			land_id landId,
+			project_name projectName,
+			purpose_id purposeId,
+			total_construction totalConstruction,
+			volumetric_rate volumetricRate,
+			contract_value contractValue,
+			land_vale landVale,
+			state_id stateId,
+			person_charge personCharge,
+			follow_time followTime,
+			region_code regionCode,
+			city_code cityCode,
+			steate_id steateId,
+			coordinate,
+			region_total_value regionTotalValue,
+			group_total_value groupTotalValue,
+			region_name regionName,
+			city_name cityName,
+			land_nature_id landNatureId,
+			confirm_time confirmTime,
+			user_name userName,
+			is_contract isContract,
+			is_approve isApprove,
+			is_history isHistory,
+			contract_time contractTime
+		FROM
+			tutou_th_landinformation_tb
+        WHERE land_id = #{landId}
+    </select>
+
+	<update id="batchUpateLandinfoList">
+        <foreach collection="list" separator=";" item="item">
+            update tutou_th_landinformation_tb set
+            	id = #{item.id},
+           		land_id = #{item.landId},
+				project_name = #{item.projectName},
+				purpose_id = #{item.purposeId},
+				total_construction = #{item.totalConstruction},
+				volumetric_rate = #{item.volumetricRate},
+				contract_value = #{item.contractValue},
+				land_vale = #{item.landVale},
+				state_id = #{item.stateId},
+				person_charge = #{item.personCharge},
+				follow_time = #{item.followTime},
+				region_code = #{item.regionCode},
+				city_code = #{item.cityCode},
+				steate_id = #{item.steateId},
+				coordinate = #{item.coordinate},
+				region_total_value = #{item.regionTotalValue},
+				group_total_value = #{item.groupTotalValue},
+				region_name = #{item.regionName},
+				city_name = #{item.cityName},
+				land_nature_id = #{item.landNatureId},
+				confirm_time = #{item.confirmTime},
+				user_name = #{item.userName},
+				is_contract = #{item.isContract},
+				is_approve = #{item.isApprove},
+				contract_time = #{item.contractTime},
+				is_history = #{item.isHistory},
+				update_time = #{item.updateTime}
+			Where id = #{item.id}
+        </foreach>
+    </update>
+
+</mapper>

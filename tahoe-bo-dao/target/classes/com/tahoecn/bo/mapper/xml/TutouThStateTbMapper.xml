@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tahoecn.bo.mapper.TutouThStateTbMapper">
+
+	<select id="selectStateListDS" resultType="com.tahoecn.bo.model.entity.TutouThStateTb">
+        SELECT
+			id sourceId,
+			steate_id steateId,
+			steate_name steateName,
+			type
+		FROM
+			th_state_tb
+    </select>
+    
+	<select id="selectBySourceId" resultType="com.tahoecn.bo.model.entity.TutouThStateTb">
+        SELECT
+			id,
+			source_id sourceId,
+			steate_id steateId,
+			steate_name steateName,
+			type
+		FROM
+			tutou_th_state_tb
+		Where source_id = #{sourceId}
+    </select>
+
+	<insert id="batchInsertStateList">
+		INSERT INTO tutou_th_state_tb (
+			id,source_id,steate_id,steate_name,
+			type,create_time 
+		) VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+    	(
+    		#{item.id},#{item.sourceId},#{item.steateId},
+    		#{item.steateName},#{item.type},#{item.createTime}
+      	)
+    	</foreach>
+	</insert>
+	
+	<update id="batchUpdateStateList">
+        <foreach collection="list" separator=";" item="item">
+            update tutou_th_state_tb set
+            	id = #{item.id},
+				source_id = #{item.sourceId},
+				steate_id = #{item.steateId},
+				steate_name = #{item.steateName},
+				type = #{item.type},
+				update_time = #{item.updateTime}
+			Where id = #{item.id}
+        </foreach>
+    </update>
+    
+</mapper>

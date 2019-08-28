@@ -1,0 +1,66 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.tahoecn.bo.config.TahoeSSOConfig",
+      "name": "tahoe.sso",
+      "type": "com.tahoecn.bo.config.TahoeSSOConfig"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.tahoecn.bo.config.TahoeSSOConfig",
+      "name": "tahoe.sso.cookie-domain",
+      "description": "cookie domain属性",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.tahoecn.bo.config.TahoeSSOConfig",
+      "name": "tahoe.sso.intercept-mapping-path",
+      "description": "单点登录拦截的uri",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.tahoecn.bo.config.TahoeSSOConfig",
+      "name": "tahoe.sso.login-url",
+      "description": "登录URL",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.tahoecn.bo.config.TahoeSSOConfig",
+      "name": "tahoe.sso.logout-url",
+      "description": "退出URL",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.tahoecn.bo.config.TahoeSSOConfig",
+      "name": "tahoe.sso.open",
+      "description": "SSO开关",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.tahoecn.bo.config.TahoeSSOConfig",
+      "name": "tahoe.sso.permission-intercept-mapping-path",
+      "description": "权限校验拦截的uri",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.tahoecn.bo.config.TahoeSSOConfig",
+      "name": "tahoe.sso.permission-open",
+      "description": "sso权限验证开关",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.tahoecn.bo.config.TahoeSSOConfig",
+      "name": "tahoe.sso.uc-sso-web-url",
+      "description": "uc-sso-web接口地址",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.tahoecn.bo.config.TahoeSSOConfig",
+      "name": "tahoe.sso.web-url",
+      "description": "登录成功跳转url",
+      "type": "java.lang.String"
+    }
+  ]
+}

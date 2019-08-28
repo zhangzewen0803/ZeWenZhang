@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tahoecn.bo.mapper.BoApproveRecordMapper">
+
+	<select id="selectByApproveId" resultType="com.tahoecn.bo.model.entity.BoApproveRecord">
+        SELECT
+			id,
+			approve_id approveId,
+			ref_id refId,
+			ref_table refTable,
+			doc_subject docSubject,
+			template_id templateTd,
+			doc_content docContent,
+			version_desc versionDesc,
+			form_status formStatus,
+			back_type backType,
+			creater_id createrId,
+			creater_name createrName,
+			create_time createTime
+		FROM
+			bo_approve_record
+		WHERE approve_id = #{approveId}
+    </select>
+</mapper>

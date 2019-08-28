@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tahoecn.bo.mapper.TutouThProductPositionTbMapper">
+
+	<select id="selectProductPositListDS" resultType="com.tahoecn.bo.model.entity.TutouThProductPositionTb">
+       SELECT
+			product_id productId,
+			land_id landId,
+			category,
+			total_area totalArea,
+			property_area propertyArea,
+			use_area useArea,
+			property_price propertyPrice,
+			use_area_price useAreaPrice,
+			total_section totalSection,
+			total_section_mark totalSectionMark,
+			cost_save costSave,
+			total_value totalValue,
+			remarks,
+			deleted,
+			type,
+			huxing,
+			total_price_section totalPriceSection,
+			balance_price balancePrice,
+			average_sale_price averageSalePrice,
+			set_number setNumber,
+			create_time createTime
+		FROM
+			th_product_position_tb
+    </select>
+    
+	<select id="selectByProductId" resultType="com.tahoecn.bo.model.entity.TutouThProductPositionTb">
+       SELECT
+       		id,
+			product_id productId,
+			land_id landId,
+			category,
+			total_area totalArea,
+			property_area propertyArea,
+			use_area useArea,
+			property_price propertyPrice,
+			use_area_price useAreaPrice,
+			total_section totalSection,
+			total_section_mark totalSectionMark,
+			cost_save costSave,
+			total_value totalValue,
+			remarks,
+			deleted,
+			type,
+			huxing,
+			total_price_section totalPriceSection,
+			balance_price balancePrice,
+			average_sale_price averageSalePrice,
+			set_number setNumber,
+			create_time createTime
+		FROM
+			tutou_th_product_position_tb
+		Where product_id = #{productId}	
+    </select>
+
+	<insert id="batchInsertProductPositList">
+		INSERT INTO tutou_th_product_position_tb (
+			id,product_id,land_id,category,total_area,property_area,
+			use_area,property_price,use_area_price,total_section,
+			total_section_mark,cost_save,total_value,remarks,deleted,
+			type,huxing,total_price_section,balance_price,
+			average_sale_price,set_number,create_time 
+		) VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+    	(
+    		#{item.id},#{item.productId},#{item.landId},#{item.category},#{item.totalArea},
+    		#{item.propertyArea},#{item.useArea},#{item.propertyPrice},#{item.useAreaPrice},
+    		#{item.totalSection},#{item.totalSectionMark},#{item.costSave},#{item.totalValue},
+    		#{item.remarks},#{item.deleted},#{item.type},#{item.huxing},#{item.totalPriceSection},
+    		#{item.balancePrice},#{item.averageSalePrice},#{item.setNumber},#{item.createTime}
+      	)
+    	</foreach>
+	</insert>
+	
+	<update id="batchUpdateProductPositList">
+        <foreach collection="list" separator=";" item="item">
+            update tutou_th_product_position_tb set
+            	id = #{item.id},
+				product_id = #{item.productId},
+				land_id = #{item.landId},
+				category = #{item.category},
+				total_area = #{item.totalArea},
+				property_area = #{item.propertyArea},
+				use_area = #{item.useArea},
+				property_price = #{item.propertyPrice},
+				use_area_price = #{item.useAreaPrice},
+				total_section = #{item.totalSection},
+				total_section_mark = #{item.totalSectionMark},
+				cost_save = #{item.costSave},
+				total_value = #{item.totalValue},
+				remarks = #{item.remarks},
+				deleted = #{item.deleted},
+				type = #{item.type},
+				huxing = #{item.huxing},
+				total_price_section = #{item.totalPriceSection},
+				balance_price = #{item.balancePrice},
+				average_sale_price = #{item.averageSalePrice},
+				set_number = #{item.setNumber},
+				update_time = #{item.updateTime}
+			Where id = #{item.id}
+        </foreach>
+    </update>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tahoecn.bo.mapper.BoBuildingProductTypeQuotaMapMapper">
+
+	<update id="deletedBuildingProductTypeQuotaByBulId">
+    	UPDATE bo_building_product_type_quota_map bptqm
+		SET bptqm.is_delete = 1,
+			bptqm.updater_id = #{userId},
+ 			bptqm.updater_name = #{userName},
+ 			bptqm.update_time = NOW()
+		WHERE
+			bptqm.building_product_type_id IN (
+				SELECT
+					bptm.id
+				FROM
+					bo_building_product_type_map bptm
+				WHERE
+					bptm.building_id = #{buildingId}
+			)
+    </update>
+    
+    <update id="deletedBuildingProductTypeQuotaByProductTypeId">
+    	UPDATE bo_building_product_type_quota_map
+		SET is_delete = 1,
+			updater_id = #{userId},
+ 			updater_name = #{userName},
+ 			update_time = NOW()
+		WHERE
+			building_product_type_id = #{productTypeId}
+    </update>
+</mapper>
