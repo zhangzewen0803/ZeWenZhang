@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tahoecn.bo.mapper.BoProjectLandPartProductTypeMapMapper">
+
+    <select id="selectLandProductByProjectId" resultType="com.tahoecn.bo.model.dto.BoLandPartProductTypeMapExtendDto">
+        <!--SELECT ptm.* FROM (SELECT id,project_id,is_disable,is_delete from (SELECT id,project_id,is_disable,is_delete
+        FROM bo_project_quota_extend WHERE stage_code = 'STAGE_01' AND version_status = 2
+        AND is_delete = 0 AND is_disable = 0 order by create_time desc) as tab group by project_id) pqe
+        LEFT JOIN bo_land_part_product_type_map ptm ON ptm.project_quota_extend_id = pqe.id
+        WHERE pqe.is_delete = 0 AND pqe.is_disable = 0 AND ptm.is_delete = 0 AND ptm.is_disable = 0
+        AND pqe.project_id = #{projectId} AND ptm.land_part_id = #{landId}-->
+
+        SELECT attrt.quota_value attrQuotaValue,quo.* FROM (SELECT ptm.* FROM (SELECT id,project_id,is_disable,is_delete from (SELECT id,project_id,is_disable,is_delete
+        FROM bo_project_quota_extend WHERE stage_code = 'STAGE_01' AND version_status = 2
+        AND is_delete = 0 AND is_disable = 0 order by create_time desc) as tab group by project_id) pqe
+        LEFT JOIN bo_land_part_product_type_map ptm ON ptm.project_quota_extend_id = pqe.id
+        LEFT JOIN bo_land_part_product_type_quota_map tqm ON tqm.land_part_product_type_id = ptm.id AND tqm.quota_code <![CDATA[ <> ]]> 'PROPERTY_RIGHT_ATTR'
+        WHERE pqe.is_delete = 0 AND pqe.is_disable = 0 AND ptm.is_delete = 0 AND ptm.is_disable = 0
+        AND pqe.project_id = #{projectId} AND ptm.land_part_id = #{landId} GROUP BY ptm.id) as quo
+        INNER JOIN bo_land_part_product_type_quota_map attrt ON attrt.land_part_product_type_id = quo.id
+        AND attrt.quota_code = 'PROPERTY_RIGHT_ATTR' AND attrt.is_delete = 0 AND attrt.is_disable = 0;
+
+    </select>
+
+    <select id="selectProductBySubIdAndLandId" resultType="com.tahoecn.bo.model.entity.BoProjectLandPartProductTypeMap">
+        SELECT ptm.*  FROM mdm_project_info mpi
+        INNER JOIN (select id,project_id,is_disable,is_delete from
+        (SELECT id,project_id,is_disable,is_delete from bo_project_extend
+        where is_delete = 0 AND is_disable = 0 order by create_time desc) as tab group by project_id)
+        bpe ON mpi.sid = bpe.project_id
+        LEFT JOIN bo_project_land_part_map lpm ON lpm.project_extend_id = bpe.id
+        LEFT JOIN bo_project_land_part_product_type_map ptm ON ptm.project_land_part_id = lpm.id
+        WHERE bpe.is_delete = 0 AND bpe.is_disable = 0 AND lpm.is_delete = 0 AND lpm.is_disable = 0
+        AND ptm.is_delete = 0 AND ptm.is_disable = 0 AND mpi.sid = #{subProjectId} AND lpm.land_part_id = #{landId}
+    </select>
+
+    <select id="selectbyProjectQuotaExtendId" resultType="com.tahoecn.bo.model.entity.BoLandPartProductTypeMap">
+        SELECT * FROM bo_land_part_product_type_map WHERE project_quota_extend_id in
+        <foreach collection="list" item="item" index="index" open="(" separator="" close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectProjectLandInfoBySubIdAndLandId" resultType="com.tahoecn.bo.model.entity.BoProjectLandPartMap">
+        SELECT lpm.*  FROM mdm_project_info mpi
+        INNER JOIN (select id,project_id,is_disable,is_delete from
+        (SELECT id,project_id,is_disable,is_delete from bo_project_extend
+        where is_delete = 0 AND is_disable = 0 order by create_time desc) as tab group by project_id)
+        bpe ON mpi.sid = bpe.project_id
+        LEFT JOIN bo_project_land_part_map lpm ON lpm.project_extend_id = bpe.id
+        LEFT JOIN bo_project_land_part_product_type_map ptm ON ptm.project_land_part_id = lpm.id
+        WHERE bpe.is_delete = 0 AND bpe.is_disable = 0 AND lpm.is_delete = 0 AND lpm.is_disable = 0
+        AND ptm.is_delete = 0 AND ptm.is_disable = 0 AND mpi.sid = #{subProjectId} AND lpm.land_part_id = #{landId}
+    </select>
+
+    <update id="updateIsDeleteBatch" parameterType="com.tahoecn.bo.model.entity.BoProjectLandPartProductTypeMap">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            UPDATE bo_project_land_part_product_type_map
+            <set>
+                <if test="item.isDelete != null">
+                    is_delete = #{item.isDelete},
+                </if>
+                <if test="item.updateTime != null">
+                    update_time = #{item.updateTime},
+                </if>
+            </set>
+            WHERE id = #{item.id}
+        </foreach>
+    </update>
+
+</mapper>

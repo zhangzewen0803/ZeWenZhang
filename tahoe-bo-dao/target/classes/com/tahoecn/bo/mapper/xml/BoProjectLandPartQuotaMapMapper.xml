@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tahoecn.bo.mapper.BoProjectLandPartQuotaMapMapper">
+
+    <select id="selectSubProjectQuotaValuesByProjectId" resultType="com.tahoecn.bo.model.dto.ProjectProductTypeQuotaDto">
+        SELECT DISTINCT lpm.land_part_id landId,pqm.id quoteId,pqm.quota_code quoteCode,sum(pqm.quota_value) quoteValue FROM mdm_project_info mpi
+        INNER JOIN (select id,project_id,is_disable,is_delete from
+        (SELECT id,project_id,is_disable,is_delete from bo_project_extend
+        where is_delete = 0 AND is_disable = 0 order by create_time desc) as tab group by project_id)
+        bpe ON mpi.sid = bpe.project_id
+        LEFT JOIN bo_project_land_part_map lpm ON bpe.id = lpm.project_extend_id
+        LEFT JOIN bo_project_land_part_quota_map pqm ON pqm.project_land_part_id = lpm.id
+        WHERE mpi.level_type = 'PROJECT' AND mpi.sid = #{proId} AND bpe.is_delete = 0 AND bpe.is_disable = 0
+        AND lpm.is_all_dev = 0 AND lpm.is_delete = 0 AND lpm.is_disable = 0
+        AND pqm.is_delete = 0  AND pqm.is_disable = 0 GROUP BY lpm.land_part_id,pqm.quota_code
+    </select>
+
+</mapper>

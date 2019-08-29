@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tahoecn.bo.mapper.BoProjectLandPartProductTypeQuotaMapMapper">
+
+    <select id="selectSubProjectQuotaValuesByProjectId" resultType="com.tahoecn.bo.model.dto.ProjectProductTypeQuotaDto">
+        SELECT lpm.land_part_id landId,tqm.id quoteId,tqm.quota_code quoteCode,sum(tqm.quota_value) quoteValue
+        FROM mdm_project_info mpi
+        INNER JOIN (select id,project_id,is_disable,is_delete from
+        (SELECT id,project_id,is_disable,is_delete from bo_project_extend
+        where is_delete = 0 AND is_disable = 0 order by create_time desc) as tab group by project_id)
+        bpe ON mpi.sid = bpe.project_id
+        LEFT JOIN bo_project_land_part_map lpm ON lpm.project_extend_id = bpe.id
+        LEFT JOIN bo_project_land_part_product_type_map ptm ON lpm.id = ptm.project_land_part_id
+        LEFT JOIN bo_project_land_part_product_type_quota_map tqm ON tqm.project_land_part_product_type_id = ptm.id
+        WHERE lpm.is_delete = 0 AND lpm.is_disable = 0 AND ptm.is_delete = 0 AND ptm.is_disable = 0
+        AND tqm.is_delete = 0 AND tqm.is_disable = 0 AND lpm.is_all_dev = 0 AND mpi.sid in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        GROUP BY lpm.land_part_id,tqm.quota_code;
+    </select>
+
+    <select id="selectTotalQuotaBySubProjectAndLandIds" resultType="com.tahoecn.bo.model.dto.ProjectProductTypeQuotaDto">
+        SELECT lpm.land_part_id landId,tqm.id quoteId,tqm.quota_code quoteCode,tqm.quota_value quoteValue,ptm.product_type_code productCode
+        FROM mdm_project_info mpi
+        INNER JOIN (select id,project_id,is_disable,is_delete from
+        (SELECT id,project_id,is_disable,is_delete from bo_project_extend
+        where is_delete = 0 AND is_disable = 0 order by create_time desc) as tab group by project_id)
+        bpe ON mpi.sid = bpe.project_id
+        LEFT JOIN bo_project_land_part_map lpm ON lpm.project_extend_id = bpe.id
+        LEFT JOIN bo_project_land_part_product_type_map ptm ON lpm.id = ptm.project_land_part_id
+        LEFT JOIN bo_project_land_part_product_type_quota_map tqm ON tqm.project_land_part_product_type_id = ptm.id
+        WHERE lpm.is_delete = 0 AND lpm.is_disable = 0 AND ptm.is_delete = 0 AND ptm.is_disable = 0
+        AND tqm.is_delete = 0 AND tqm.is_disable = 0 AND lpm.land_part_id = #{landId}
+        AND mpi.sid in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        GROUP BY lpm.land_part_id,tqm.quota_code;
+    </select>
+
+    <select id="selectLandQuoteByProductIds" resultType="com.tahoecn.bo.model.entity.BoLandPartProductTypeQuotaMap">
+        SELECT * FROM bo_land_part_product_type_quota_map
+        WHERE is_delete = 0 AND is_disable = 0 AND land_part_product_type_id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectByTypeQuoteIds" resultType="com.tahoecn.bo.model.entity.BoProjectLandPartProductTypeQuotaMap">
+        SELECT tqm.* FROM bo_project_land_part_product_type_quota_map tqm
+        WHERE tqm.is_delete = 0 AND tqm.is_disable = 0 AND tqm.project_land_part_product_type_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectTotalQuotaBySubProjectIdsAndLandId" resultType="com.tahoecn.bo.model.dto.ProjectProductTypeQuotaDto">
+        SELECT lpm.land_part_id landId,ptm.product_type_code productCode,tqm.id quoteId,tqm.quota_code quoteCode,SUM(tqm.quota_value) quoteValue
+        ,ptm.property_right_attr attrQuotaValue FROM mdm_project_info mpi
+        INNER JOIN (select id,project_id,is_disable,is_delete from
+        (SELECT id,project_id,is_disable,is_delete from bo_project_extend
+        where is_delete = 0 AND is_disable = 0 order by create_time desc) as tab group by project_id)
+        bpe ON mpi.sid = bpe.project_id
+        LEFT JOIN bo_project_land_part_map lpm ON lpm.project_extend_id = bpe.id
+        LEFT JOIN bo_project_land_part_product_type_map ptm ON lpm.id = ptm.project_land_part_id
+        LEFT JOIN bo_project_land_part_product_type_quota_map tqm ON tqm.project_land_part_product_type_id = ptm.id
+        WHERE lpm.is_delete = 0 AND lpm.is_disable = 0 AND ptm.is_delete = 0 AND ptm.is_disable = 0
+        AND tqm.is_delete = 0 AND tqm.is_disable = 0 AND lpm.land_part_id = #{landId} AND mpi.sid in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        GROUP BY lpm.land_part_id,ptm.property_right_attr,ptm.product_type_code,tqm.quota_code
+    </select>
+
+    <select id="selectTotalQuoteByLandIds" resultType="com.tahoecn.bo.model.dto.SubProTotalQuoteValueDto">
+        SELECT lpm.land_part_id landId,lpm.land_part_name landName,ptm.product_type_code productCode,tqm.quota_code quoteCode,SUM(tqm.quota_value) sumQuoteValue
+        ,ptm.property_right_attr attrQuotaValue FROM bo_project_land_part_map lpm
+        LEFT JOIN bo_project_land_part_product_type_map ptm ON ptm.project_land_part_id = lpm.id
+        inner JOIN bo_project_land_part_product_type_quota_map tqm ON tqm.project_land_part_product_type_id = ptm.id
+        WHERE lpm.is_delete = 0 AND lpm.is_disable = 0 AND ptm.is_delete = 0 AND ptm.is_disable = 0 AND tqm.is_delete = 0 AND tqm.is_disable = 0
+        AND lpm.land_part_id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        GROUP BY lpm.land_part_id,ptm.product_type_code,tqm.quota_code
+    </select>
+
+    <select id="selectTotalQuoteBySubProjectIdsAndLandId" resultType="com.tahoecn.bo.model.dto.BoProjectLandPartProductTypeQuotaMapExtendsDto">
+        SELECT ptm.product_type_code productCode,SUM(tqm.quota_value) sumQuoteValue,ptm.property_right_attr attrQuotaValue,tqm.*
+        FROM mdm_project_info mpi
+        INNER JOIN (select id,project_id,is_disable,is_delete from
+        (SELECT id,project_id,is_disable,is_delete from bo_project_extend
+        where is_delete = 0 AND is_disable = 0 order by create_time desc) as tab group by project_id)
+        bpe ON mpi.sid = bpe.project_id
+        LEFT JOIN bo_project_land_part_map lpm ON lpm.project_extend_id = bpe.id
+        LEFT JOIN bo_project_land_part_product_type_map ptm ON lpm.id = ptm.project_land_part_id
+        LEFT JOIN bo_project_land_part_product_type_quota_map tqm ON tqm.project_land_part_product_type_id = ptm.id
+        WHERE lpm.is_delete = 0 AND lpm.is_disable = 0 AND ptm.is_delete = 0 AND ptm.is_disable = 0
+        AND tqm.is_delete = 0 AND tqm.is_disable = 0 AND lpm.land_part_id = #{landId} AND mpi.sid in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        GROUP BY ptm.product_type_code,tqm.quota_code
+    </select>
+
+    <select id="selectTotalQuoteByLandId" resultType="com.tahoecn.bo.model.dto.ProjectProductTypeQuotaDto">
+        SELECT lpm.land_part_id landId,ptm.property_right_attr attrQuotaValeu,ptm.product_type_code productCode,tqm.id quoteId,tqm.quota_code quoteCode,SUM(tqm.quota_value) quoteValue
+        ,ptm.property_right_attr attrQuotaValue FROM  bo_project_land_part_map lpm
+        LEFT JOIN bo_project_land_part_product_type_map ptm ON lpm.id = ptm.project_land_part_id
+        LEFT JOIN bo_project_land_part_product_type_quota_map tqm ON tqm.project_land_part_product_type_id = ptm.id
+        WHERE lpm.is_delete = 0 AND lpm.is_disable = 0 AND ptm.is_delete = 0 AND ptm.is_disable = 0
+        AND tqm.is_delete = 0 AND tqm.is_disable = 0 AND lpm.land_part_id = #{landId}
+        GROUP BY ptm.property_right_attr,ptm.product_type_code,tqm.quota_code;
+    </select>
+
+    <update id="updateIsDeleteBatch" parameterType="com.tahoecn.bo.model.entity.BoProjectLandPartProductTypeQuotaMap">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            UPDATE bo_project_land_part_product_type_quota_map
+            <set>
+                <if test="item.isDelete != null">
+                    is_delete = #{item.isDelete},
+                </if>
+                <if test="item.updateTime != null">
+                    update_time = #{item.updateTime},
+                </if>
+            </set>
+            WHERE id = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectQuoteByProductIds" resultType="com.tahoecn.bo.model.dto.ProductAttrQuotaDto">
+        SELECT ptm.id productId,ptm.property_right_attr attrQuotaValue,ptm.product_type_code productCode,
+        tqm.id quotaId,tqm.quota_code quoteCode,tqm.quota_value quoteValue
+        FROM  bo_project_land_part_product_type_map ptm
+        LEFT JOIN bo_project_land_part_product_type_quota_map tqm ON tqm.project_land_part_product_type_id = ptm.id
+        WHERE ptm.is_delete = 0 AND ptm.is_disable = 0
+        AND tqm.is_delete = 0 AND tqm.is_disable = 0 AND ptm.id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        GROUP BY ptm.property_right_attr,ptm.product_type_code,tqm.quota_code;
+    </select>
+
+    <select id="selectQuotaByLandId" resultType="com.tahoecn.bo.model.entity.BoProjectLandPartProductTypeQuotaMap">
+        SELECT tqm.* FROM mdm_project_info mpi
+        INNER JOIN (select id,project_id,is_disable,is_delete from
+        (SELECT id,project_id,is_disable,is_delete from bo_project_extend
+        where is_delete = 0 AND is_disable = 0 order by create_time desc) as tab group by project_id)
+        bpe ON mpi.sid = bpe.project_id
+        LEFT JOIN bo_project_land_part_map lpm ON lpm.project_extend_id = bpe.id
+        LEFT JOIN bo_project_land_part_product_type_map ptm ON ptm.project_land_part_id = lpm.id
+        INNER JOIN bo_project_land_part_product_type_quota_map tqm ON tqm.project_land_part_product_type_id = ptm.id
+        WHERE lpm.land_part_id = #{landId} AND lpm.is_delete = 0 AND lpm.is_disable = 0 AND ptm.is_delete = 0
+        AND ptm.is_disable = 0 AND tqm.is_delete = 0 AND tqm.is_disable = 0
+    </select>
+
+    <select id="selectQuotaBySubIdsAndLandId" resultType="com.tahoecn.bo.model.entity.BoProjectLandPartProductTypeQuotaMap">
+        SELECT tqm.* FROM mdm_project_info mpi
+        INNER JOIN (select id,project_id,is_disable,is_delete from
+        (SELECT id,project_id,is_disable,is_delete from bo_project_extend
+        where is_delete = 0 AND is_disable = 0 order by create_time desc) as tab group by project_id)
+        bpe ON mpi.sid = bpe.project_id
+        LEFT JOIN bo_project_land_part_map lpm ON lpm.project_extend_id = bpe.id
+        LEFT JOIN bo_project_land_part_product_type_map ptm ON ptm.project_land_part_id = lpm.id
+        INNER JOIN bo_project_land_part_product_type_quota_map tqm ON tqm.project_land_part_product_type_id = ptm.id
+        WHERE lpm.land_part_id = #{landId} AND mpi.sid in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND lpm.is_delete = 0 AND lpm.is_disable = 0 AND ptm.is_delete = 0
+        AND ptm.is_disable = 0 AND tqm.is_delete = 0 AND tqm.is_disable = 0
+    </select>
+
+    <select id="selectQuotaByLandIdAndExtendId" resultType="com.tahoecn.bo.model.dto.BoProjectLandPartProductTypeQuotaMapExtendsDto">
+        SELECT ptm.id productId,ptm.property_right_attr attrQuotaValue,ptm.product_type_code productCode,
+        tqm.* FROM bo_project_land_part_map lpm
+        LEFT JOIN	bo_project_land_part_product_type_map ptm ON ptm.project_land_part_id = lpm.id
+        LEFT JOIN bo_project_land_part_product_type_quota_map tqm ON tqm.project_land_part_product_type_id = ptm.id
+        WHERE ptm.is_delete = 0 AND ptm.is_disable = 0
+        AND tqm.is_delete = 0 AND tqm.is_disable = 0
+        AND lpm.is_delete = 0 AND lpm.is_disable = 0
+        AND lpm.project_extend_id = #{extendId} AND lpm.land_part_id = #{landId}
+        GROUP BY ptm.property_right_attr,ptm.product_type_code,tqm.quota_code;
+    </select>
+
+</mapper>
